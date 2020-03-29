@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Matrix multiplier_201720580</title>
+</head>
+
+<body>
+    <form>
+        Enter your 4X4 matrix</p>
+        ex) [[1,1,1,1],[1,1,1,1]]</p>
+        Matrix 1: <input type="text" id="m1" style="width: 300px; height: 50px"></p>
+        Matrix 2: <input type="text" id="m2" style="width: 300px; height: 50px"></p>
+        <input type="button" value="Calculate" onclick="cal();"></p>
+        Result: <input type="text" id="res" style="width: 500px; height: 50px">
+    </form>
+
+
+    <script type="text/javascript">
+        var matrix1;
+        var matrix2;
+        var res;
+        var a;
+
+        function cal() {
+            var matrix1string = document.getElementById("m1").value;
+            var matrix2string = document.getElementById("m2").value;
+            matrix1 = JSON.parse(matrix1string);
+            matrix2 = JSON.parse(matrix2string);
+
+            res = matrixMultiplication(matrix1, matrix2);
+
+            document.querySelector("#res").value =
+                "[[" + res[0] + "] ," + "[" + res[1] + "] ," + "[" + res[2] + "] ," + "[" + res[3] + "]]";
+
+
+            console.log(res);
+        }
+
+        function matrixMultiplication(m1, m2) {
+            var mul = [];
+
+            for (i = 0; i < 4; i++) {
+                var row = [];
+                for (j = 0; j < 4; j++) {
+                    var x = 0;
+                    for (k = 0; k < 4; k++) x += m1[i][k] * m2[k][j];
+                    row.push(x);
+                }
+                mul.push(row);
+            }
+            return mul;
+        }
+    </script>
+</body>
+
+</html>
