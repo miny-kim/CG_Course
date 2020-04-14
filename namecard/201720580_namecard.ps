@@ -1,0 +1,64 @@
+%!
+/Times-Roman findfont
+13 scalefont
+setfont
+
+/name{
+gsave
+123 25 moveto
+(Postscript Programmer) stringwidth pop 2 div neg 0 rmoveto
+(Postscript Programmer) show
+123 11 moveto
+(Minyeong Kim) stringwidth pop 2 div neg 0 rmoveto
+(Minyeong Kim) show
+grestore
+} def
+
+/inch {72 mul} def
+
+/wedge{
+0 0 moveto
+1 0 translate
+15 rotate
+0 15 sin translate
+0 0 15 sin -90 90 arc
+closepath
+}def
+
+/flower{
+gsave
+30 30 scale 
+0.02 setlinewidth
+1 1 12
+{ 12 div setgray 
+gsave
+wedge
+gsave fill grestore 
+0 setgray stroke
+grestore
+30 rotate 
+} for
+grestore
+}def
+
+/box{
+0 0 moveto
+255 0 lineto
+255 142 lineto
+0 142 lineto
+0 setlinewidth
+closepath
+stroke
+}def
+
+box
+name
+
+0.8 inch 1.2 inch translate 
+flower
+0.9 inch 0 inch translate 
+flower
+0.9 inch 0 inch translate 
+flower
+
+showpage
