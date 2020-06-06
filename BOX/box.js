@@ -46,7 +46,7 @@ function createCube(x, y, z) {
         sx / 2, -sy / 2, sz / 2, 0.1, 0.3, 0.3, 1.0,
         sx / 2, sy / 2, sz / 2, 0.1, 0.3, 0.3, 1.0,
 
-        -sx / 2, sy / 2, sz / 2, 0.1, 0.3, 0.3, 1.0, -sx / 2, sy / 2, sz / 2, 0.1, 0.3, 0.3, 1.0,
+        -sx / 2, sy / 2, sz / 2, 0.1, 0.3, 0.3, 1.0, -sx / 2, -sy / 2, sz / 2, 0.1, 0.3, 0.3, 1.0,
         sx / 2, -sy / 2, sz / 2, 0.1, 0.3, 0.3, 1.0,
 
         //밑
@@ -145,8 +145,8 @@ function initialiseShaders() {
     gl.attachShader(gl.programObject, gl.fragShader);
     gl.attachShader(gl.programObject, gl.vertexShader);
     // Bind the custom vertex attribute "myVertex" to location 0
-    gl.bindAttribLocation(gl.programObject, 0, "myVertex"); //vertex
-    gl.bindAttribLocation(gl.programObject, 1, "myColor"); //fragment
+    gl.bindAttribLocation(gl.programObject, 0, "myVertex");
+    gl.bindAttribLocation(gl.programObject, 1, "myColor");
     // Link the program
     gl.linkProgram(gl.programObject);
     // Check if linking succeeded in a similar way we checked for compilation errors
@@ -164,12 +164,12 @@ function initialiseShaders() {
 var rotY = 0.0;
 
 
-function renderScene() { // draw
+function renderScene() {
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
     gl.clear(gl.COLOR_BUFFER_BIT);
-    //getUniformLocation : shader안에서 uniform변수의 위치 얻어옴
+
     var matrixLocation = gl.getUniformLocation(gl.programObject, "transformationMatrix");
     var transformationMatrix = [
         Math.cos(rotY), 0.0, -Math.sin(rotY), 0.0,
@@ -180,7 +180,7 @@ function renderScene() { // draw
     rotY += 0.01;
 
 
-    //uniform변수에 값 할당 matrixLocation에 transformationMatrix할당
+
     gl.uniformMatrix4fv(matrixLocation, gl.FALSE, transformationMatrix);
 
     if (!testGLError("gl.uniformMatrix4fv")) {
@@ -189,7 +189,6 @@ function renderScene() { // draw
 
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.vertexBuffer);
     gl.enableVertexAttribArray(0);
-    //position attribute location, size, type, normalization, stride(반복되는 주기 (matrix의 총 길이 4*7개)), offset
     gl.vertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, 28, 0);
     gl.enableVertexAttribArray(1);
     gl.vertexAttribPointer(1, 4, gl.FLOAT, gl.FALSE, 28, 12);
@@ -199,11 +198,10 @@ function renderScene() { // draw
         return false;
     }
 
-    //primitive assembly 
     // gl.lineWidth(6.0);  // It is not working at Chrome!
     // gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT,0);
     //gl.drawArrays(gl.LINE_STRIP, 0, 36);
-    gl.drawArrays(gl.TRIANGLES, 0, 36); //삼각형 총 12개 (12*3개 점), 0부터 총 36개 점으로 gl.triangle 그려라
+    gl.drawArrays(gl.TRIANGLES, 0, 36);
     console.log("Enum for Primitive Assumbly", gl.TRIANGLES, gl.TRIANGLE, gl.POINTS);
     if (!testGLError("gl.drawArrays")) {
         return false;
