@@ -1,6 +1,4 @@
 var gl;
-var sx, sy, sz;
-var vertexData = [];
 
 function testGLError(functionLastCalled) {
     /* gl.getError returns the last error that occurred using WebGL for debugging */
@@ -27,84 +25,32 @@ function initialiseGL(canvas) {
     return true;
 }
 
-function createCube(x, y, z) {
-    sx = x;
-    sy = y;
-    sz = z;
-
-    vertexData = [
-        //앞
-        -sx / 2, sy / 2, -sz / 2, 0.1, 0.1, 0.1, 1.0,
-        sx / 2, -sy / 2, -sz / 2, 0.1, 0.1, 0.1, 1.0,
-        sx / 2, sy / 2, -sz / 2, 0.1, 0.1, 0.1, 1.0,
-
-        -sx / 2, sy / 2, -sz / 2, 0.1, 0.1, 0.1, 1.0, -sx / 2, -sy / 2, -sz / 2, 0.1, 0.1, 0.1, 1.0,
-        sx / 2, -sy / 2, -sz / 2, 0.1, 0.1, 0.1, 1.0,
-
-        //뒤
-        -sx / 2, sy / 2, sz / 2, 0.1, 0.3, 0.3, 1.0,
-        sx / 2, -sy / 2, sz / 2, 0.1, 0.3, 0.3, 1.0,
-        sx / 2, sy / 2, sz / 2, 0.1, 0.3, 0.3, 1.0,
-
-        -sx / 2, sy / 2, sz / 2, 0.1, 0.3, 0.3, 1.0, -sx / 2, sy / 2, sz / 2, 0.1, 0.3, 0.3, 1.0,
-        sx / 2, -sy / 2, sz / 2, 0.1, 0.3, 0.3, 1.0,
-
-        //밑
-        -sx / 2, -sy / 2, sz / 2, 0.1, 0.5, 0.0, 1.0,
-        sx / 2, -sy / 2, -sz / 2, 0.1, 0.5, 0.0, 1.0,
-        sx / 2, -sy / 2, sz / 2, 0.1, 0.5, 0.0, 1.0,
-
-        -sx / 2, -sy / 2, sz / 2, 0.1, 0.5, 0.0, 1.0, -sx / 2, -sy / 2, -sz / 2, 0.1, 0.5, 0.0, 1.0,
-        sx / 2, -sy / 2, -sz / 2, 0.1, 0.5, 0.0, 1.0,
-
-        //위
-        -sx / 2, sy / 2, sz / 2, 1.0, 1.0, 0.7, 1.0,
-        sx / 2, sy / 2, -sz / 2, 1.0, 1.0, 0.7, 1.0,
-        sx / 2, sy / 2, sz / 2, 1.0, 1.0, 0.7, 1.0,
-
-        -sx / 2, sy / 2, sz / 2, 1.0, 1.0, 0.7, 1.0, -sx / 2, sy / 2, -sz / 2, 1.0, 1.0, 0.7, 1.0,
-        sx / 2, sy / 2, -sz / 2, 1.0, 1.0, 0.7, 1.0,
-        //왼
-        -sx / 2, sy / 2, sz / 2, 1.0, 0.0, 1.0, 1.0, -sx / 2, -sy / 2, sz / 2, 1.0, 0.0, 1.0, 1.0, -sx / 2, sy / 2, -sz / 2, 1.0, 0.0, 1.0, 1.0,
-
-        -sx / 2, -sy / 2, sz / 2, 1.0, 0.0, 1.0, 1.0, -sx / 2, -sy / 2, -sz / 2, 1.0, 0.1, 0.0, 1.0, -sx / 2, sy / 2, -sz / 2, 1.0, 0.0, 1.0, 1.0,
-        //오
-        sx / 2, -sy / 2, sz / 2, 0.5, 0.5, 0.5, 1.0,
-        sx / 2, -sy / 2, -sz / 2, 0.5, 0.5, 0.5, 1.0,
-        sx / 2, sy / 2, -sz / 2, 0.5, 0.5, 0.5, 1.0,
-
-        sx / 2, -sy / 2, sz / 2, 0.5, 0.5, 0.5, 1.0,
-        sx / 2, sy / 2, -sz / 2, 0.5, 0.5, 0.5, 1.0,
-        sx / 2, sy / 2, sz / 2, 0.5, 0.5, 0.5, 1.0,
-
-    ];
-
-    return vertexData;
-}
-
 var shaderProgram;
-var elementData = [0, 1, 2, 3, 4, 5];
 
 function initialiseBuffer() {
+    //이 data는 cpu에 있음 현재
+    var vertexData = [-0.4, -0.4, 0.0, // Bottom left
+        0.4, -0.4, 0.0, // Bottom right
+        0.0, 0.4, 0.0 // Top middle
+    ];
 
+    // Generate a buffer object
     gl.vertexBuffer = gl.createBuffer();
+    // Bind buffer as a vertex buffer so we can fill it with data
+    //좌표 정보 buffer에 담기
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.vertexBuffer);
+    /* Set the buffer's size, data and usage */
+    //api부분에서 arraybuffer부분으로 넘기기!
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexData), gl.STATIC_DRAW);
-
-    gl.elementBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.elementBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(elementData), gl.STATIC_DRAW);
-
     return testGLError("initialiseBuffers");
 }
 
 function initialiseShaders() {
 
     var fragmentShaderSource = '\
-			varying highp vec4 color; \
 			void main(void) \
 			{ \
-				gl_FragColor = color; \
+				gl_FragColor = vec4(1.0, 1.0, 0.66, 1.0); \
 			}';
 
     gl.fragShader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -119,15 +65,10 @@ function initialiseShaders() {
     // Vertex shader code
     var vertexShaderSource = '\
 			attribute highp vec4 myVertex; \
-			attribute highp vec4 myColor; \
 			uniform mediump mat4 transformationMatrix; \
-			uniform mediump mat4 virwMatrix; \
-			uniform mediump mat4 projMatrix; \
-			varying highp vec4 color;\
 			void main(void)  \
 			{ \
 				gl_Position = transformationMatrix * myVertex; \
-				color = myColor; \
 			}';
 
     gl.vertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -145,8 +86,7 @@ function initialiseShaders() {
     gl.attachShader(gl.programObject, gl.fragShader);
     gl.attachShader(gl.programObject, gl.vertexShader);
     // Bind the custom vertex attribute "myVertex" to location 0
-    gl.bindAttribLocation(gl.programObject, 0, "myVertex"); //vertex
-    gl.bindAttribLocation(gl.programObject, 1, "myColor"); //fragment
+    gl.bindAttribLocation(gl.programObject, 0, "myVertex");
     // Link the program
     gl.linkProgram(gl.programObject);
     // Check if linking succeeded in a similar way we checked for compilation errors
@@ -156,55 +96,40 @@ function initialiseShaders() {
     }
 
     gl.useProgram(gl.programObject);
-    console.log("myVertex Location is: ", gl.getAttribLocation(gl.programObject, "myColor"));
 
     return testGLError("initialiseShaders");
 }
 
-var rotY = 0.0;
+function renderScene() {
 
-
-function renderScene() { // draw
-
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clearColor(0.6, 0.8, 1.0, 1.0);
 
     gl.clear(gl.COLOR_BUFFER_BIT);
-    //getUniformLocation : shader안에서 uniform변수의 위치 얻어옴
+
     var matrixLocation = gl.getUniformLocation(gl.programObject, "transformationMatrix");
     var transformationMatrix = [
-        Math.cos(rotY), 0.0, -Math.sin(rotY), 0.0,
+        1.0, 0.0, 0.0, 0.0,
         0.0, 1.0, 0.0, 0.0,
-        Math.sin(rotY), 0.0, Math.cos(rotY), 0.5, // For pseudo perspective View
+        0.0, 0.0, 1.0, 0.0,
         0.0, 0.0, 0.0, 1.0
     ];
-    rotY += 0.01;
 
-
-    //uniform변수에 값 할당 matrixLocation에 transformationMatrix할당
     gl.uniformMatrix4fv(matrixLocation, gl.FALSE, transformationMatrix);
 
     if (!testGLError("gl.uniformMatrix4fv")) {
         return false;
     }
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, gl.vertexBuffer);
+    // Enable the user-defined vertex array
     gl.enableVertexAttribArray(0);
-    //position attribute location, size, type, normalization, stride(반복되는 주기 (matrix의 총 길이 4*7개)), offset
-    gl.vertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, 28, 0);
-    gl.enableVertexAttribArray(1);
-    gl.vertexAttribPointer(1, 4, gl.FLOAT, gl.FALSE, 28, 12);
-    //gl.vertexAttrib4f(1, Math.random(), 0.0, 1.0, 1.0);
+    // Set the vertex data to this attribute index, with the number of floats in each position
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, 0, 0);
 
     if (!testGLError("gl.vertexAttribPointer")) {
         return false;
     }
 
-    //primitive assembly 
-    // gl.lineWidth(6.0);  // It is not working at Chrome!
-    // gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT,0);
-    //gl.drawArrays(gl.LINE_STRIP, 0, 36);
-    gl.drawArrays(gl.TRIANGLES, 0, 36); //삼각형 총 12개 (12*3개 점), 0부터 총 36개 점으로 gl.triangle 그려라
-    console.log("Enum for Primitive Assumbly", gl.TRIANGLES, gl.TRIANGLE, gl.POINTS);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
     if (!testGLError("gl.drawArrays")) {
         return false;
     }
@@ -214,7 +139,6 @@ function renderScene() { // draw
 
 function main() {
     var canvas = document.getElementById("helloapicanvas");
-    vertexData = createCube(0.6, 0.6, 0.6);
 
     if (!initialiseGL(canvas)) {
         return;
