@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>WebGL Demo</title>
+    <link rel="stylesheet" href="webgl.css" type="text/css">
+  </head>
+
+  <body>
+    You can change your video. <input type="file" id="myVideo">
+    <br><br>
+    <canvas id="glcanvas" width="640" height="480"></canvas>
+    <br>
+    This button makes video play or pause.
+    <button id="pause">Play/Pause</button>
+    <br>
+    This button makes cube rotates or stop.
+    <button id="stop">Move/Stop</button>
+    <br>
+    This button makes video play faster or slower.
+    <button id="fast">Faster</button>
+    <button id="slow">Slower</button>
+    Video Speed : <span id="speed">1</span>
+    <br>
+    This button makes cube rotates faster or slower.
+    <button id="rFast">Faster</button>
+    <button id="rSlow">Slower</button>
+    Rotate Speed : <span id="rSpeed">1</span>
+  </body>
+
+  <script src="gl-matrix.js"></script>
+  <script src="videoTexture.js"></script>
+</html>
